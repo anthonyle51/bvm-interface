@@ -13,28 +13,33 @@ class VendingMachineUI:
         # self.root.resizable(False, False)
 
         # Main frame configuration
-        self.main_frame = ttk.Frame(root)
-        self.main_frame.pack(pady=10, fill='both', expand=True)
-        
-        self.left_header = ttk.Frame(self.main_frame)
-        self.left_header.grid(row=0, column=0)
+        self.main_frame = tk.Frame(root, highlightbackground='red', highlightthickness=2)
+        self.main_frame.pack(fill='both', expand=True)
 
-        self.right_header = ttk.Frame(self.main_frame)
-        self.right_header.grid(row=0, column=1)
+        
+        self.left_header = tk.Frame(self.main_frame, highlightbackground='red', highlightthickness=2)
+        self.left_header.grid(row=0, column=0, sticky='nsew')
+
+
+        self.right_header = tk.Frame(self.main_frame, highlightbackground='red', highlightthickness=2)
+        self.right_header.grid(row=0, column=1, sticky='nsew')
 
         # Left side frame for products
-        self.left_frame = ttk.Frame(self.main_frame)
-        self.left_frame.grid(row=1, column=0, sticky='ns')
+        self.left_frame = tk.Frame(self.main_frame, highlightbackground=
+        'red', highlightthickness=2)
+        self.left_frame.grid(row=1, column=0, columnspan=1, sticky='nsew')
 
         # Right side frame for cart or additional info
-        self.right_frame = ttk.Frame(self.main_frame, width=400)
-        self.right_frame.grid(row=1, column=1, sticky='nsew')
+        self.right_frame = tk.Frame(self.main_frame, highlightbackground='red', highlightthickness=2)
+        self.right_frame.grid(row=1, column=1, columnspan=1, sticky='nsew')
 
         # Configure column configuration in main_frame for resizing behavior
-        self.main_frame.columnconfigure(0, weight=2)  # Let the left frame expand more
-        self.main_frame.columnconfigure(1, weight=1)  # Fixed width for the right frame
+        self.main_frame.columnconfigure(0, weight=2)
+        self.main_frame.columnconfigure(1, weight=1) 
 
-        # Sample products in the vending machine with images
+        self.main_frame.rowconfigure(0, weight=1)  
+        self.main_frame.rowconfigure(1, weight=4) 
+
         self.products = [
             {"id": "A1", "name": "Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
             # {"id": "A2", "name": "Lithium AAA", "price": 6.99, "image_path": "batteries/energizer-lithium-AAA.webp"},
@@ -63,7 +68,7 @@ class VendingMachineUI:
         for product in self.products:
             # Container frame for each product
             product_frame = tk.Frame(self.products_frame, bg='white', highlightthickness=2)
-            product_frame.pack(padx=5, pady=5, fill='x')
+            product_frame.pack(padx=5, pady=5)
 
             # self.product = product
 
@@ -81,15 +86,8 @@ class VendingMachineUI:
             text = f"{product['name']} - ${product['price']}"
             text_label = tk.Label(product_frame, text=text)
             text_label.pack(side='bottom')
-            #text_label.bind("<Button-1>", self.on_product_click) 
-
-            # product_frame.bind("<Button-1>", self.on_product_click) 
-
-            # button = ttk.Button(product_frame, text="Add to Cart", command=lambda p=product: self.add_to_cart(p))
-            # button.pack(side='bottom', padx=10)
 
     def setup_checkout_panel(self):
-        ttk.Label(self.right_frame, text="Cart Summary", font=('Arial', 16)).pack(pady=20)
         self.cart_listbox = tk.Listbox(self.right_frame)
         self.cart_listbox.pack(fill='both', expand=True)
         ttk.Button(self.right_frame, text="Clear Cart", command=self.clear_cart).pack(fill='x', pady=5)
