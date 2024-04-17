@@ -11,6 +11,7 @@ class VendingMachineUI:
         # root.overrideredirect(True)
         self.root.geometry('800x480')
         # self.root.resizable(False, False)
+        self.dark_color = '#4d5e52'
 
         # Main frame configuration
         self.main_frame = tk.Frame(root)
@@ -23,7 +24,7 @@ class VendingMachineUI:
         self.left_header.grid(row=0, column=0, sticky='nesw')
 
 
-        self.right_header = tk.Frame(self.main_frame, bg='white', width=325)
+        self.right_header = tk.Frame(self.main_frame, bg=self.dark_color, width=325)
         self.right_header.pack_propagate(0)
         self.right_header.grid(row=0, column=2, sticky='nesw')
 
@@ -78,11 +79,13 @@ class VendingMachineUI:
         self.cart_items = {}
         self.cart_images = {}
         self.checkout_image= None
+        self.x_image = None
+
         self.setup_checkout_panel()
 
     def setup_header(self):
         tk.Label(self.left_header, text="PlusMinus", font=('Arial', 16), bg='#90ee90').pack(pady=20)
-        tk.Label(self.right_header, text="Cart Summary", font=('Arial', 16), bg='white').pack(pady=20)
+        tk.Label(self.right_header, text="Your Cart", font=('Arial', 16), bg=self.dark_color, fg='white').pack(pady=20)
 
     def setup_products_panel(self):
         self.images = {}
@@ -90,6 +93,7 @@ class VendingMachineUI:
 
         # Creating product display with images
         self.products_frame = tk.Frame(self.left_frame, background='#ededed')
+        self.products_frame.pack_propagate(0)
         self.products_frame.pack(fill='both', expand=True)
 
         #self.products_frame.grid(row=0, column=0, sticky='nsew')
@@ -102,7 +106,7 @@ class VendingMachineUI:
                     print(self.products_keys[count])
                     product = self.products[self.products_keys[count]]
                     # Container frame for each product
-                    product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
+                    product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='white', highlightthickness=2)
                     product_frame.grid(row=i, column=j, sticky='ew')
 
                     original_image = Image.open(product['image_path'])
@@ -127,20 +131,20 @@ class VendingMachineUI:
         self.right_frame.rowconfigure(1, weight=2) 
         self.right_frame.columnconfigure(0, weight=1)
 
-        self.parent_cart = tk.Frame(self.right_frame, bg='yellow', height=240)
+        self.parent_cart = tk.Frame(self.right_frame, bg='white', height=240, highlightthickness=2, highlightbackground=self.dark_color)
         self.parent_cart.pack_propagate(0)
         self.parent_cart.grid(row=0, sticky='nesw')
 
-        self.cart_canvas = tk.Canvas(self.parent_cart, width=25, bg ='purple', highlightbackground='blue', highlightthickness=2)
+        self.cart_canvas = tk.Canvas(self.parent_cart, width=25, bg ='white')
         #self.cart_canvas.pack_propagate(0)
-        self.cart_scrollbar = tk.Scrollbar(self.parent_cart, bg='yellow', orient='vertical', command=self.cart_canvas.yview)
+        self.cart_scrollbar = tk.Scrollbar(self.parent_cart, bg='white', orient='vertical', command=self.cart_canvas.yview)
 
 
         self.cart_canvas.pack(side="left", fill="both", expand=True)
         self.cart_scrollbar.pack(side="right", fill="y")
 
 
-        self.scrollable_frame = tk.Frame(self.cart_canvas, bg='pink', highlightbackground='red', highlightthickness=2)
+        self.scrollable_frame = tk.Frame(self.cart_canvas, bg='white')
         self.scrollable_frame.pack(side='top', fill='x', expand=True)
 
         self.scrollable_frame.bind(
@@ -276,29 +280,87 @@ class VendingMachineUI:
 
     def update_cart_view(self):
         self.clear_frame(self.scrollable_frame)
-
+        x_image = Image.open('assets/x.png')
+        x_resized_image = x_image.resize((25, 25), Image.LANCZOS) 
+        x_image_photo = ImageTk.PhotoImage(x_resized_image)
+        self.x_image = x_image_photo
     
         for item in self.cart_items:
-            frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
+            # frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
+            # frame.pack(side='top', pady=2, fill="x", expand=True)
+
+            # product = self.products[item]
+                        
+            # original_image = Image.open(product['image_path'])
+            # resized_image = original_image.resize((50, 50), Image.LANCZOS) 
+            # photo = ImageTk.PhotoImage(resized_image)
+            # self.cart_images[product['id']] = photo 
+
+            # # Image label
+            # image_label = tk.Label(frame, image=photo, bg='white')
+            # image_label.pack(side='left', padx=10)
+
+
+            # # Text label for the name and price, and button for adding to cart
+            # text = f"{product['name']} - ${product['price'] * self.cart_items[item]:.2f}"
+            # text_label = tk.Label(frame, text=text, background='white')
+            # text_label.pack(side='left')
+
+            frame = tk.Frame(self.scrollable_frame, width=50, background='white', highlightthickness=2, highlightbackground='black')
             frame.pack(side='top', pady=2, fill="x", expand=True)
+            frame.columnconfigure(0, weight=1)
+            frame.columnconfigure(1, weight=1)
+
             product = self.products[item]
                         
             original_image = Image.open(product['image_path'])
-            resized_image = original_image.resize((25, 25), Image.LANCZOS) 
+            resized_image = original_image.resize((50, 50), Image.LANCZOS) 
             photo = ImageTk.PhotoImage(resized_image)
             self.cart_images[product['id']] = photo 
 
             # Image label
-            image_label = tk.Label(frame, image=photo, bg='white')
-            image_label.pack(side='left', padx=10)
-            image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
+            image_label = tk.Label(frame, image=photo, background='white')
+            image_label.grid(column=0, row=0)
+
+            info_frame = tk.Frame(frame, bg='white')
+            info_frame.grid(column=1, row=0)
 
             # Text label for the name and price, and button for adding to cart
-            text = f"{product['name']} - ${product['price'] * self.cart_items[item]:.2f}"
-            text_label = tk.Label(frame, text=text, background='white')
-            text_label.pack(side='left')
+            name_text = f"{product['name']}"
+            name_label = tk.Label(info_frame, text=name_text, background='white')
+            name_label.grid(row=0, column=0)
 
 
+            quantity_frame = tk.Frame(info_frame, bg='white')
+            quantity_frame.grid(row=1, column=0)
+
+            quantity_frame.columnconfigure(0, weight=1)
+            quantity_frame.columnconfigure(1, weight=2)
+            quantity_frame.columnconfigure(2, weight=1)
+
+            qty_text = f"QTY: {self.cart_items[item]}"
+            qty__label = tk.Label(quantity_frame, text=qty_text, background='blue')
+            qty__label.grid(column=0, row=0)
+
+            margin_frame = tk.Frame(quantity_frame)
+            margin_frame.grid(column=1, row=0)
+
+            price_text = f"${product['price'] * self.cart_items[item]:.2f}"
+            price_label = tk.Label(quantity_frame, text=price_text, background='white', highlightthickness=1, highlightbackground='blue')
+            price_label.grid(column=2, row=0)
+
+            # x_image = Image.open('assets/x.png')
+            # x_resized_image = x_image.resize((50, 50), Image.LANCZOS) 
+            # x_image_photo = ImageTk.PhotoImage(x_resized_image)
+            # self.x_image = x_image_photo
+
+            x_image_label = tk.Label(frame, image=self.x_image, background='white', width=40)
+            x_image_label.grid(column=2, row=0)
+            x_image_label.bind("<Button-1>", lambda event, p=product: self.remove_from_cart(event, p))
+
+    def remove_from_cart(self, event, product):
+        self.cart_items.pop(product['id'])
+        self.update_cart_view()
 
     def clear_frame(self, frame):
         for widget in frame.winfo_children():
