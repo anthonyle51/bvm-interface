@@ -49,6 +49,13 @@ class VendingMachineUI:
         self.main_frame.rowconfigure(0, weight=1)  
         self.main_frame.rowconfigure(1, weight=5) 
 
+        self.alkaline_inserted = 0
+        self.lithium_inserted = 0
+        self.alkaline_discount = 0
+        self.lithium_dicount = 0
+
+        self.subtotal = 0
+
         self.products = {
             "A1":{"id": "A1", "name": "Engergizer Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
             # {"id": "A2", "name": "Lithium AAA", "price": 6.99, "image_path": "batteries/energizer-lithium-AAA.webp"},
@@ -113,27 +120,6 @@ class VendingMachineUI:
                     text_label.pack(side='bottom')
 
                     count += 1
-                
-        # for product_dict in self.products:
-        #     product = self.products[product_dict]
-        #     # Container frame for each product
-        #     product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
-        #     product_frame.pack(padx=5, pady=5)
-
-        #     original_image = Image.open(product['image_path'])
-        #     resized_image = original_image.resize((100, 100), Image.LANCZOS) 
-        #     photo = ImageTk.PhotoImage(resized_image)
-        #     self.images[product['id']] = photo 
-
-        #     # Image label
-        #     image_label = tk.Label(product_frame, image=photo, bg='white')
-        #     image_label.pack(side='top', padx=10)
-        #     image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
-
-        #     # Text label for the name and price, and button for adding to cart
-        #     text = f"{product['name']} - ${product['price']}"
-        #     text_label = tk.Label(product_frame, text=text, background='white')
-        #     text_label.pack(side='bottom')
 
     def setup_checkout_panel(self):
         self.right_frame.rowconfigure(0, weight=3)  
@@ -178,23 +164,23 @@ class VendingMachineUI:
         self.checkout_frame.pack_propagate(0)
         self.checkout_frame.grid(row=1, sticky='nsew')
 
-        subtotal = f"Subtotal: "
+        subtotal = f"Subtotal: ${self.subtotal}"
         subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
         subtotal_label.grid(row=0)
 
-        lithium_inserted_text = f"Lithium Inserted:"
+        lithium_inserted_text = f"Lithium Inserted: {self.lithium_inserted}"
         lithium_inserted_label = tk.Label(self.checkout_frame, text=lithium_inserted_text, background='white')
         lithium_inserted_label.grid(row=1)
 
-        alkaline_inserted_text = f"Alkaline Inserted:"
+        alkaline_inserted_text = f"Alkaline Inserted: {self.alkaline_inserted}"
         alkaline_inserted_label = tk.Label(self.checkout_frame, text=alkaline_inserted_text, background='white')
         alkaline_inserted_label.grid(row=2)
 
-        discount_text = f"Discount: $"
+        discount_text = f"Discount: ${self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted}"
         discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
         discount_label.grid(row=3)
 
-        total = f"Total: "
+        total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted)}"
         total_label = tk.Label(self.checkout_frame, text=total, background='white')
         total_label.grid(row=4)
 
@@ -278,7 +264,7 @@ class VendingMachineUI:
             image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
 
             # Text label for the name and price, and button for adding to cart
-            text = f"{product['name']} - ${product['price'] * self.cart_items[item]}"
+            text = f"{product['name']} - ${product['price'] * self.cart_items[item]:.2f}"
             text_label = tk.Label(frame, text=text, background='white')
             text_label.pack(side='left')
 
