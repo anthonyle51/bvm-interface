@@ -11,10 +11,11 @@ class VendingMachineUI:
         # root.overrideredirect(True)
         self.root.geometry('800x480')
         # self.root.resizable(False, False)
-        self.dark_color = '#4d5e52'
+        self.dark_color = '#5c7068'
+        self.neutral_color = '#c3d4cd'
 
         # Main frame configuration
-        self.main_frame = tk.Frame(root)
+        self.main_frame = tk.Frame(root, highlightbackground=self.dark_color, highlightthickness=2)
         self.main_frame.pack_propagate(0)
         self.main_frame.pack(fill='both', expand=True)
 
@@ -38,7 +39,7 @@ class VendingMachineUI:
         self.right_frame.pack_propagate(0)
         self.right_frame.grid(row=1, column=2, columnspan=1, sticky='nsew')
 
-        self.divider_frame = tk.Frame(self.main_frame, bg='#001a01')
+        self.divider_frame = tk.Frame(self.main_frame, bg=self.dark_color, width=2)
         self.divider_frame.pack_propagate(0)
         self.divider_frame.grid(row=0, column=1, rowspan=2, columnspan=1, sticky='nsew')
 
@@ -58,15 +59,15 @@ class VendingMachineUI:
         self.subtotal = 0
 
         self.products = {
-            "A1":{"id": "A1", "name": "Duracell CR2032", "price": 2.95, "image_path": "batteries/duracell_cr2032.png"},
-            "A2":{"id": "A2", "name": "Hi-Watt CR2032", "price": 1.25, "image_path": "batteries/hiwatt_cr2032.png"},
-            "A3":{"id": "A3", "name": "Toshiba CR2032", "price": 1.25, "image_path": "batteries/toshiba_cr2032.jpg"},
-            "B1":{"id": "B1", "name": "Energizer Alkaline-AA", "price": 2.95, "image_path": "batteries/energizer-alkaline-AA.jpg"},
+            "A1":{"id": "A1", "name": "Duracell CR2032", "price": 2.45, "image_path": "batteries/duracell_cr2032.png"},
+            "A2":{"id": "A2", "name": "Hi-Watt CR2032", "price": 2.45, "image_path": "batteries/hiwatt_cr2032.png"},
+            "A3":{"id": "A3", "name": "Toshiba CR2032", "price": 2.45, "image_path": "batteries/toshiba_cr2032.jpg"},
+            "B1":{"id": "B1", "name": "Energizer Alkaline-AA", "price": 1.25, "image_path": "batteries/energizer-alkaline-AA.jpg"},
             "B2":{"id": "B2", "name": "Diehard Alkaline-AA", "price": 1.25, "image_path": "batteries/diehard_alkaline_AA.jpg"},
             "B3":{"id": "B3", "name": "Duracell Alkaline-AA", "price": 1.25, "image_path": "batteries/duracell-alkaline-AA.jpg"},
             "C1":{"id": "C1", "name": "Energizer Lithium-AA", "price": 2.95, "image_path": "batteries/energizer-lithium-AA.jpg"},
-            "C2":{"id": "C2", "name": "EBL Lithium-AA", "price": 1.25, "image_path": "batteries/ebl_li_AA.jpg"},
-            "C3":{"id": "C3", "name": "Duracell Lithium-AA", "price": 1.25, "image_path": "batteries/duracell_li_AA.png"}
+            "C2":{"id": "C2", "name": "EBL Lithium-AA", "price": 2.95, "image_path": "batteries/ebl_li_AA.jpg"},
+            "C3":{"id": "C3", "name": "Duracell Lithium-AA", "price": 2.95, "image_path": "batteries/duracell_li_AA.png"}
         }
 
         self.products_keys = [key for key in self.products]
@@ -165,41 +166,41 @@ class VendingMachineUI:
         self.update_checkout_frame()
 
     def update_checkout_frame(self):
-        self.checkout_frame = tk.Frame(self.right_frame, bg='orange', height=160)
+        self.checkout_frame = tk.Frame(self.right_frame, bg=self.neutral_color, height=160)
         self.checkout_frame.pack_propagate(0)
         self.checkout_frame.grid(row=1, sticky='nsew')
         print("Checkout Frame Subtotal: ", self.subtotal)
 
-        bufferRow1 = tk.Label(self.checkout_frame, text=" ", background='orange')
+        bufferRow1 = tk.Label(self.checkout_frame, text=" ", background=self.neutral_color)
         bufferRow1.grid(row=0)
-        bufferRow2 = tk.Label(self.checkout_frame, text=" ", background='orange')
+        bufferRow2 = tk.Label(self.checkout_frame, text=" ", background=self.neutral_color)
         bufferRow2.grid(row=1)
 
-        self.buffer_frame = tk.Frame(self.checkout_frame, bg='navy', height=25)
+        self.buffer_frame = tk.Frame(self.checkout_frame, bg=self.dark_color, height=25)
         self.buffer_frame.pack(side='top', fill='x', expand=False)
 
         subtotal = f"Subtotal: ${self.subtotal:.2f}"
-        subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
+        subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background=self.neutral_color)
         subtotal_label.grid(row=2)
 
         lithium_inserted_text = f"Lithium Inserted: {self.lithium_inserted}"
-        lithium_inserted_label = tk.Label(self.checkout_frame, text=lithium_inserted_text, background='white')
+        lithium_inserted_label = tk.Label(self.checkout_frame, text=lithium_inserted_text, background=self.neutral_color)
         lithium_inserted_label.grid(row=3)
 
         alkaline_inserted_text = f"Alkaline Inserted: {self.alkaline_inserted}"
-        alkaline_inserted_label = tk.Label(self.checkout_frame, text=alkaline_inserted_text, background='white')
+        alkaline_inserted_label = tk.Label(self.checkout_frame, text=alkaline_inserted_text, background=self.neutral_color)
         alkaline_inserted_label.grid(row=4)
 
         discount_text = f"Discount: ${self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted}"
-        discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
+        discount_label = tk.Label(self.checkout_frame, text=discount_text, background=self.neutral_color)
         discount_label.grid(row=5)
 
         total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted):.2f}"
-        total_label = tk.Label(self.checkout_frame, text=total, background='white')
+        total_label = tk.Label(self.checkout_frame, text=total, background=self.neutral_color)
         total_label.grid(row=6)
 
-        checkout_icon = Image.open("assets/checkout.jpg")
-        resized_icon = checkout_icon.resize((25, 25), Image.LANCZOS)
+        checkout_icon = Image.open("assets/checkout.png")
+        resized_icon = checkout_icon.resize((130, 45), Image.LANCZOS)
         checkout_photo = ImageTk.PhotoImage(resized_icon)
         self.checkout_image = checkout_photo 
 
@@ -208,37 +209,26 @@ class VendingMachineUI:
         clear_cart_photo = ImageTk.PhotoImage(resized_clear_cart)
         self.clear_cart_image = clear_cart_photo 
 
-        checkout_button_frame = tk.Frame(self.checkout_frame, bg='orange')
+        checkout_button_frame = tk.Frame(self.checkout_frame, bg=self.neutral_color)
         checkout_button_frame.pack(side='right', padx=5, expand=False)
 
         # Image label
 
-        image_cc_label = tk.Label(checkout_button_frame, image=clear_cart_photo, bg='orange')
+        image_cc_label = tk.Label(checkout_button_frame, image=clear_cart_photo, bg=self.neutral_color)
         image_cc_label.grid(row=0, column=0)
 
-        bufferRow = tk.Label(checkout_button_frame, text=" ", background='orange')
+        bufferRow = tk.Label(checkout_button_frame, text=" ", background=self.neutral_color)
         bufferRow.grid(row=1, column=0)
         
-        image_label = tk.Label(checkout_button_frame, image=checkout_photo, bg='orange')
+        image_label = tk.Label(checkout_button_frame, image=checkout_photo, bg=self.neutral_color)
         image_label.grid(row=2, column=0)
         
         
-        bufferCol = tk.Label(checkout_button_frame, text=" ", background='orange')
+        bufferCol = tk.Label(checkout_button_frame, text=" ", background=self.neutral_color)
         bufferCol.grid(row=0, column=1)
 
-        checkout_button = ttk.Button(checkout_button_frame, text="Checkout", command=self.checkout)
-        checkout_button.grid(row=0, column=2)   
-        # checkout_button = ttk.Label(checkout_button_frame, text="Checkout")
-        # checkout_button.grid(row=0, column=2)
         image_label.bind("<Button-1>", lambda event, self=self: self.checkout())
-
         image_cc_label.bind("<Button-1>", lambda event, self=self: self.clear_cart())
-        # checkout_button.pack(side='right', padx=20)
-
-        # image_label.pack(side='left', padx=10, pady=10, expand=True)
-
-        # checkout_button = tk.Frame(self.checkout_frame)
-        # total_label.grid(row=4)
         
 
     def start_scroll(self, event):
@@ -361,14 +351,14 @@ class VendingMachineUI:
             quantity_frame.columnconfigure(2, weight=1)
 
             qty_text = f"QTY: {self.cart_items[item]}"
-            qty__label = tk.Label(quantity_frame, text=qty_text, background='blue')
+            qty__label = tk.Label(quantity_frame, text=qty_text, background='black', fg='white')
             qty__label.grid(column=0, row=0)
 
             margin_frame = tk.Frame(quantity_frame)
             margin_frame.grid(column=1, row=0)
 
             price_text = f"${product['price'] * self.cart_items[item]:.2f}"
-            price_label = tk.Label(quantity_frame, text=price_text, background='white', highlightthickness=1, highlightbackground='blue')
+            price_label = tk.Label(quantity_frame, text=price_text, background='white', highlightthickness=1, highlightbackground='black')
             price_label.grid(column=2, row=0)
 
             # x_image = Image.open('assets/x.png')
@@ -390,7 +380,15 @@ class VendingMachineUI:
 
     def clear_cart(self):
         self.cart_items.clear()
+        self.alkaline_inserted = 0
+        self.lithium_inserted = 0
+        self.alkaline_discount = 0
+        self.lithium_dicount = 0
+
+        self.subtotal = 0
         self.update_cart_view()
+        self.update_checkout_frame()
+
 
     def checkout(self):
         if not self.cart_items:
