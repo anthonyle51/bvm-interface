@@ -14,25 +14,26 @@ class VendingMachineUI:
 
         # Main frame configuration
         self.main_frame = tk.Frame(root)
+        self.main_frame.pack_propagate(0)
         self.main_frame.pack(fill='both', expand=True)
 
         
-        self.left_header = tk.Frame(self.main_frame, bg='#90ee90')
+        self.left_header = tk.Frame(self.main_frame, bg='#90ee90', width=450, height=80)
         self.left_header.pack_propagate(0)
-        self.left_header.grid(row=0, column=0, sticky='nsew')
+        self.left_header.grid(row=0, column=0, sticky='nesw')
 
 
-        self.right_header = tk.Frame(self.main_frame, bg='white')
+        self.right_header = tk.Frame(self.main_frame, bg='white', width=325)
         self.right_header.pack_propagate(0)
-        self.right_header.grid(row=0, column=2, sticky='nsew')
+        self.right_header.grid(row=0, column=2, sticky='nesw')
 
         # Left side frame for products
-        self.left_frame = tk.Frame(self.main_frame)
+        self.left_frame = tk.Frame(self.main_frame, width=450, bg='blue')
         self.left_frame.pack_propagate(0)
-        self.left_frame.grid(row=1, column=0, columnspan=1, sticky='nsew')
+        self.left_frame.grid(row=1, column=0, columnspan=1, sticky='nesw')
 
         # Right side frame for cart or additional info
-        self.right_frame = tk.Frame(self.main_frame, bg='white')
+        self.right_frame = tk.Frame(self.main_frame, bg='lime', width=325, height=400)
         self.right_frame.pack_propagate(0)
         self.right_frame.grid(row=1, column=2, columnspan=1, sticky='nsew')
 
@@ -41,9 +42,9 @@ class VendingMachineUI:
         self.divider_frame.grid(row=0, column=1, rowspan=2, columnspan=1, sticky='nsew')
 
         # Configure column configuration in main_frame for resizing behavior
-        self.main_frame.columnconfigure(0, weight=15)
+        self.main_frame.columnconfigure(0, weight=18)
         self.main_frame.columnconfigure(1, weight=1)
-        self.main_frame.columnconfigure(2, weight=9) 
+        self.main_frame.columnconfigure(2, weight=13) 
 
         self.main_frame.rowconfigure(0, weight=1)  
         self.main_frame.rowconfigure(1, weight=5) 
@@ -97,7 +98,7 @@ class VendingMachineUI:
                     product_frame.grid(row=i, column=j, sticky='ew')
 
                     original_image = Image.open(product['image_path'])
-                    resized_image = original_image.resize((125, 125), Image.LANCZOS) 
+                    resized_image = original_image.resize((111, 111), Image.LANCZOS) 
                     photo = ImageTk.PhotoImage(resized_image)
                     self.images[product['id']] = photo 
 
@@ -135,22 +136,25 @@ class VendingMachineUI:
         #     text_label.pack(side='bottom')
 
     def setup_checkout_panel(self):
-        # self.cart_listbox = tk.Listbox(self.right_frame, bg='white', borderwidth=0)
-        # self.cart_listbox.pack(fill='both', expand=True)
-        # tk.Button(self.right_frame, text="Clear Cart", bg='white', command=self.clear_cart).pack(fill='x', pady=5)
-        # tk.Button(self.right_frame, text="Checkout", bg='white', command=self.checkout).pack(fill='x', pady=5)
+        self.right_frame.rowconfigure(0, weight=3)  
+        self.right_frame.rowconfigure(1, weight=2) 
+        self.right_frame.columnconfigure(0, weight=1)
 
-        self.cart_canvas = tk.Canvas(self.right_frame, width=25, bg ='purple', highlightbackground='blue', highlightthickness=2)
-        self.cart_canvas.pack_propagate(0)
-        self.cart_scrollbar = tk.Scrollbar(self.right_frame, bg='yellow', orient='vertical', command=self.cart_canvas.yview)
+        self.parent_cart = tk.Frame(self.right_frame, bg='yellow', height=240)
+        self.parent_cart.pack_propagate(0)
+        self.parent_cart.grid(row=0, sticky='nesw')
+
+        self.cart_canvas = tk.Canvas(self.parent_cart, width=25, bg ='purple', highlightbackground='blue', highlightthickness=2)
+        #self.cart_canvas.pack_propagate(0)
+        self.cart_scrollbar = tk.Scrollbar(self.parent_cart, bg='yellow', orient='vertical', command=self.cart_canvas.yview)
+
+
+        self.cart_canvas.pack(side="left", fill="both", expand=True)
+        self.cart_scrollbar.pack(side="right", fill="y")
+
+
         self.scrollable_frame = tk.Frame(self.cart_canvas, bg='pink', highlightbackground='red', highlightthickness=2)
-
-        self.scrollable_frame.pack(side='top', fill='both', expand='True')
-
-        # self.scrollable_frame.grid(row=0, column=0, columnspan= 1, rowspan=1, sticky='nsew')
-
-        # self.canvas_frame = self.canvas.create_window((0,0),
-        #     window=self.mailbox_frame, anchor = NW)
+        self.scrollable_frame.pack(side='top', fill='x', expand=True)
 
         self.scrollable_frame.bind(
             "<Configure>",
@@ -159,19 +163,44 @@ class VendingMachineUI:
             )
         )
 
-        # self.cart_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        # self.cart_canvas.configure(yscrollcommand=self.cart_scrollbar.set)
+        self.cart_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="n")
+        self.cart_canvas.configure(yscrollcommand=self.cart_scrollbar.set)
 
-        self.cart_canvas.pack(side="left", fill="both", expand=True)
-        self.cart_scrollbar.pack(side="right", fill="y")
-
-        self.add_button = tk.Button(self.scrollable_frame, text="Add Frame", width=30, command=self.add_frame)
-        self.add_button.pack(side='top', fill='x', expand=True)
+        # self.add_button = tk.Button(self.scrollable_frame, text="Add Frame", width=30, command=self.add_frame)
+        # self.add_button.pack(side='top', fill='x', expand=True)
 
         self.cart_canvas.bind("<ButtonPress-1>", self.start_scroll)
         self.cart_canvas.bind("<B1-Motion>", self.do_scroll)
 
         self.orig_x = 0
+
+        self.checkout_frame = tk.Frame(self.right_frame, bg='orange', height=160)
+        self.checkout_frame.pack_propagate(0)
+        self.checkout_frame.grid(row=1, sticky='nsew')
+
+        subtotal = f"Subtotal: "
+        subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
+        subtotal_label.grid(row=0)
+
+        lithium_inserted_text = f"Lithium Inserted:"
+        lithium_inserted_label = tk.Label(self.checkout_frame, text=lithium_inserted_text, background='white')
+        lithium_inserted_label.grid(row=1)
+
+        alkaline_inserted_text = f"Alkaline Inserted:"
+        alkaline_inserted_label = tk.Label(self.checkout_frame, text=alkaline_inserted_text, background='white')
+        alkaline_inserted_label.grid(row=2)
+
+        discount_text = f"Discount: $"
+        discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
+        discount_label.grid(row=3)
+
+        total = f"Total: "
+        total_label = tk.Label(self.checkout_frame, text=total, background='white')
+        total_label.grid(row=4)
+
+        # checkout_button = tk.Frame(self.checkout_frame)
+        # total_label.grid(row=4)
+        
 
     def start_scroll(self, event):
         self.orig_x = event.x
