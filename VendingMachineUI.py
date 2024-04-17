@@ -11,6 +11,7 @@ class VendingMachineUI:
         # root.overrideredirect(True)
         self.root.geometry('800x480')
         # self.root.resizable(False, False)
+        self.dark_color = '#4d5e52'
 
         # Main frame configuration
         self.main_frame = tk.Frame(root)
@@ -23,7 +24,7 @@ class VendingMachineUI:
         self.left_header.grid(row=0, column=0, sticky='nesw')
 
 
-        self.right_header = tk.Frame(self.main_frame, bg='white', width=325)
+        self.right_header = tk.Frame(self.main_frame, bg=self.dark_color, width=325)
         self.right_header.pack_propagate(0)
         self.right_header.grid(row=0, column=2, sticky='nesw')
 
@@ -82,7 +83,7 @@ class VendingMachineUI:
 
     def setup_header(self):
         tk.Label(self.left_header, text="PlusMinus", font=('Arial', 16), bg='#90ee90').pack(pady=20)
-        tk.Label(self.right_header, text="Cart Summary", font=('Arial', 16), bg='white').pack(pady=20)
+        tk.Label(self.right_header, text="Your Cart", font=('Arial', 16), bg=self.dark_color, fg='white').pack(pady=20)
 
     def setup_products_panel(self):
         self.images = {}
@@ -128,7 +129,7 @@ class VendingMachineUI:
         self.right_frame.rowconfigure(1, weight=2) 
         self.right_frame.columnconfigure(0, weight=1)
 
-        self.parent_cart = tk.Frame(self.right_frame, bg='yellow', height=240)
+        self.parent_cart = tk.Frame(self.right_frame, bg='white', height=240, highlightthickness=2, highlightbackground=self.dark_color)
         self.parent_cart.pack_propagate(0)
         self.parent_cart.grid(row=0, sticky='nesw')
 
