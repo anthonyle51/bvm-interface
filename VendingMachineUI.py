@@ -103,7 +103,7 @@ class VendingMachineUI:
                     print(self.products_keys[count])
                     product = self.products[self.products_keys[count]]
                     # Container frame for each product
-                    product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
+                    product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='white', highlightthickness=2)
                     product_frame.grid(row=i, column=j, sticky='ew')
 
                     original_image = Image.open(product['image_path'])
@@ -132,16 +132,16 @@ class VendingMachineUI:
         self.parent_cart.pack_propagate(0)
         self.parent_cart.grid(row=0, sticky='nesw')
 
-        self.cart_canvas = tk.Canvas(self.parent_cart, width=25, bg ='purple', highlightbackground='blue', highlightthickness=2)
+        self.cart_canvas = tk.Canvas(self.parent_cart, width=25, bg ='white')
         #self.cart_canvas.pack_propagate(0)
-        self.cart_scrollbar = tk.Scrollbar(self.parent_cart, bg='yellow', orient='vertical', command=self.cart_canvas.yview)
+        self.cart_scrollbar = tk.Scrollbar(self.parent_cart, bg='white', orient='vertical', command=self.cart_canvas.yview)
 
 
         self.cart_canvas.pack(side="left", fill="both", expand=True)
         self.cart_scrollbar.pack(side="right", fill="y")
 
 
-        self.scrollable_frame = tk.Frame(self.cart_canvas, bg='pink', highlightbackground='red', highlightthickness=2)
+        self.scrollable_frame = tk.Frame(self.cart_canvas, bg='white')
         self.scrollable_frame.pack(side='top', fill='x', expand=True)
 
         self.scrollable_frame.bind(
@@ -274,7 +274,7 @@ class VendingMachineUI:
             # text_label = tk.Label(frame, text=text, background='white')
             # text_label.pack(side='left')
 
-            frame = tk.Frame(self.scrollable_frame, width=50, background='white')
+            frame = tk.Frame(self.scrollable_frame, width=50, background='white', highlightthickness=2, highlightbackground='black')
             frame.pack(side='top', pady=2, fill="x", expand=True)
             frame.columnconfigure(0, weight=1)
             frame.columnconfigure(1, weight=1)
