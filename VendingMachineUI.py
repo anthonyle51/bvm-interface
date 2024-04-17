@@ -394,7 +394,7 @@ class VendingMachineUI:
         if not self.cart_items:
             messagebox.showinfo("Checkout", "Your cart is empty.")
             return
-        total = sum(item['price'] for item in self.cart_items)
+        total = sum(self.products[item]['price'] for item in self.cart_items)
         messagebox.showinfo("Checkout", f"Total amount: ${total:.2f}\nThank you for your purchase!")
         self.clear_cart()
 
