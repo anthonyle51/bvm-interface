@@ -161,7 +161,9 @@ class VendingMachineUI:
 
         self.orig_x = 0
 
-        #================= Checkout Frame =================
+        self.update_checkout_frame()
+
+    def update_checkout_frame(self):
         self.checkout_frame = tk.Frame(self.right_frame, bg='orange', height=160)
         self.checkout_frame.pack_propagate(0)
         self.checkout_frame.grid(row=1, sticky='nsew')
@@ -170,7 +172,7 @@ class VendingMachineUI:
         bufferRow = tk.Label(self.checkout_frame, text=" ", background='orange')
         bufferRow.grid(row=0)
 
-        subtotal = f"Subtotal: ${self.subtotal}"
+        subtotal = f"Subtotal: ${self.subtotal:.2f}"
         subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
         subtotal_label.grid(row=1)
 
@@ -186,7 +188,7 @@ class VendingMachineUI:
         discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
         discount_label.grid(row=4)
 
-        total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted)}"
+        total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted):.2f}"
         total_label = tk.Label(self.checkout_frame, text=total, background='white')
         total_label.grid(row=5)
 
@@ -206,14 +208,7 @@ class VendingMachineUI:
         bufferCol.grid(row=0, column=1)
 
         checkout_button = ttk.Button(checkout_button_frame, text="Checkout", command=self.checkout)
-        checkout_button.grid(row=0, column=2)
-        # checkout_button.pack(side='right', padx=20)
-
-        # image_label.pack(side='left', padx=10, pady=10, expand=True)
-
-        # checkout_button = tk.Frame(self.checkout_frame)
-        # total_label.grid(row=4)
-        
+        checkout_button.grid(row=0, column=2)   
 
     def start_scroll(self, event):
         self.orig_x = event.x
@@ -271,6 +266,7 @@ class VendingMachineUI:
             self.subtotal += product['price']
             
         self.update_cart_view()
+        self.update_checkout_frame()
         print("Subtotal:", self.subtotal)
 
     def update_cart_view(self):
