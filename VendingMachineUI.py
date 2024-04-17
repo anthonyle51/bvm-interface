@@ -77,6 +77,7 @@ class VendingMachineUI:
         self.cart_items = {}
         self.cart_images = {}
         self.checkout_image= None
+        self.clear_cart_image= None
         self.x_image = None
 
         self.setup_checkout_panel()
@@ -169,46 +170,76 @@ class VendingMachineUI:
         self.checkout_frame.grid(row=1, sticky='nsew')
         print("Checkout Frame Subtotal: ", self.subtotal)
 
-        bufferRow = tk.Label(self.checkout_frame, text=" ", background='orange')
-        bufferRow.grid(row=0)
+        bufferRow1 = tk.Label(self.checkout_frame, text=" ", background='orange')
+        bufferRow1.grid(row=0)
+        bufferRow2 = tk.Label(self.checkout_frame, text=" ", background='orange')
+        bufferRow2.grid(row=1)
+
+        self.buffer_frame = tk.Frame(self.checkout_frame, bg='navy', height=25)
+        self.buffer_frame.pack(side='top', fill='x', expand=False)
 
         subtotal = f"Subtotal: ${self.subtotal:.2f}"
         subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
-        subtotal_label.grid(row=1)
+        subtotal_label.grid(row=2)
 
         lithium_inserted_text = f"Lithium Inserted: {self.lithium_inserted}"
         lithium_inserted_label = tk.Label(self.checkout_frame, text=lithium_inserted_text, background='white')
-        lithium_inserted_label.grid(row=2)
+        lithium_inserted_label.grid(row=3)
 
         alkaline_inserted_text = f"Alkaline Inserted: {self.alkaline_inserted}"
         alkaline_inserted_label = tk.Label(self.checkout_frame, text=alkaline_inserted_text, background='white')
-        alkaline_inserted_label.grid(row=3)
+        alkaline_inserted_label.grid(row=4)
 
         discount_text = f"Discount: ${self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted}"
         discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
-        discount_label.grid(row=4)
+        discount_label.grid(row=5)
 
         total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted):.2f}"
         total_label = tk.Label(self.checkout_frame, text=total, background='white')
-        total_label.grid(row=5)
+        total_label.grid(row=6)
 
         checkout_icon = Image.open("assets/checkout.jpg")
-        resized_icon = checkout_icon.resize((25, 25), Image.LANCZOS) 
+        resized_icon = checkout_icon.resize((25, 25), Image.LANCZOS)
         checkout_photo = ImageTk.PhotoImage(resized_icon)
         self.checkout_image = checkout_photo 
 
-        checkout_button_frame = tk.Frame(self.checkout_frame, bg='white', height=40, width=10)
-        checkout_button_frame.pack(side='right', padx=10, expand=False)
+        clear_cart_icon = Image.open("assets/clear-cart.png")
+        resized_clear_cart = clear_cart_icon.resize((130, 45), Image.LANCZOS) 
+        clear_cart_photo = ImageTk.PhotoImage(resized_clear_cart)
+        self.clear_cart_image = clear_cart_photo 
+
+        checkout_button_frame = tk.Frame(self.checkout_frame, bg='orange')
+        checkout_button_frame.pack(side='right', padx=5, expand=False)
 
         # Image label
-        image_label = tk.Label(checkout_button_frame, image=checkout_photo, bg='white')
-        image_label.grid(row=0, column=0)
+
+        image_cc_label = tk.Label(checkout_button_frame, image=clear_cart_photo, bg='orange')
+        image_cc_label.grid(row=0, column=0)
+
+        bufferRow = tk.Label(checkout_button_frame, text=" ", background='orange')
+        bufferRow.grid(row=1, column=0)
         
-        bufferCol = tk.Label(checkout_button_frame, text=" ", background='white')
+        image_label = tk.Label(checkout_button_frame, image=checkout_photo, bg='orange')
+        image_label.grid(row=2, column=0)
+        
+        
+        bufferCol = tk.Label(checkout_button_frame, text=" ", background='orange')
         bufferCol.grid(row=0, column=1)
 
         checkout_button = ttk.Button(checkout_button_frame, text="Checkout", command=self.checkout)
         checkout_button.grid(row=0, column=2)   
+        # checkout_button = ttk.Label(checkout_button_frame, text="Checkout")
+        # checkout_button.grid(row=0, column=2)
+        image_label.bind("<Button-1>", lambda event, self=self: self.checkout())
+
+        image_cc_label.bind("<Button-1>", lambda event, self=self: self.clear_cart())
+        # checkout_button.pack(side='right', padx=20)
+
+        # image_label.pack(side='left', padx=10, pady=10, expand=True)
+
+        # checkout_button = tk.Frame(self.checkout_frame)
+        # total_label.grid(row=4)
+        
 
     def start_scroll(self, event):
         self.orig_x = event.x
