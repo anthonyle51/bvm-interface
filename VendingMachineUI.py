@@ -18,37 +18,51 @@ class VendingMachineUI:
 
         
         self.left_header = tk.Frame(self.main_frame, bg='#90ee90')
+        self.left_header.pack_propagate(0)
         self.left_header.grid(row=0, column=0, sticky='nsew')
 
 
         self.right_header = tk.Frame(self.main_frame, bg='white')
+        self.right_header.pack_propagate(0)
         self.right_header.grid(row=0, column=2, sticky='nsew')
 
         # Left side frame for products
         self.left_frame = tk.Frame(self.main_frame)
+        self.left_frame.pack_propagate(0)
         self.left_frame.grid(row=1, column=0, columnspan=1, sticky='nsew')
 
         # Right side frame for cart or additional info
         self.right_frame = tk.Frame(self.main_frame, bg='white')
+        self.right_frame.pack_propagate(0)
         self.right_frame.grid(row=1, column=2, columnspan=1, sticky='nsew')
 
         self.divider_frame = tk.Frame(self.main_frame, bg='#001a01')
+        self.divider_frame.pack_propagate(0)
         self.divider_frame.grid(row=0, column=1, rowspan=2, columnspan=1, sticky='nsew')
 
         # Configure column configuration in main_frame for resizing behavior
-        self.main_frame.columnconfigure(0, weight=10)
+        self.main_frame.columnconfigure(0, weight=15)
         self.main_frame.columnconfigure(1, weight=1)
-        self.main_frame.columnconfigure(2, weight=5) 
+        self.main_frame.columnconfigure(2, weight=9) 
 
         self.main_frame.rowconfigure(0, weight=1)  
-        self.main_frame.rowconfigure(1, weight=4) 
+        self.main_frame.rowconfigure(1, weight=5) 
 
         self.products = {
-            "A1":{"id": "A1", "name": "Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
+            "A1":{"id": "A1", "name": "Engergizer Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
             # {"id": "A2", "name": "Lithium AAA", "price": 6.99, "image_path": "batteries/energizer-lithium-AAA.webp"},
-            "B1":{"id": "B1", "name": "Alkaline AA", "price": 4.99, "image_path": "batteries/duracell-alkaline-AA.jpg"},
-            "B2":{"id": "B2", "name": "Alkaline AAA", "price": 4.49, "image_path": "batteries/energizer-alkaline-AAA.jpg"}
+            "B1":{"id": "B1", "name": "Duracell Alkaline AA", "price": 4.99, "image_path": "batteries/duracell-alkaline-AA.jpg"},
+            "B2":{"id": "B2", "name": "Alkaline AAA", "price": 4.49, "image_path": "batteries/energizer-alkaline-AAA.jpg"},
+
+            "C1":{"id": "C1", "name": "Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
+            "C2":{"id": "C2", "name": "Alkaline AA", "price": 4.99, "image_path": "batteries/duracell-alkaline-AA.jpg"},
+            "C3":{"id": "C3", "name": "Alkaline AAA", "price": 4.49, "image_path": "batteries/energizer-alkaline-AAA.jpg"},
+            "C4":{"id": "C4", "name": "Lithium AA", "price": 5.99, "image_path": "batteries/energizer-lithium-AA.jpg"},
+            "C5":{"id": "C5", "name": "Alkaline AA", "price": 4.99, "image_path": "batteries/duracell-alkaline-AA.jpg"},
+            "C6":{"id": "C6", "name": "Alkaline AAA", "price": 4.49, "image_path": "batteries/energizer-alkaline-AAA.jpg"}
         }
+
+        self.products_keys = [key for key in self.products]
 
         self.setup_header()
         self.setup_products_panel()
@@ -71,26 +85,54 @@ class VendingMachineUI:
 
         #self.products_frame.grid(row=0, column=0, sticky='nsew')
 
-        for product_dict in self.products:
-            product = self.products[product_dict]
-            # Container frame for each product
-            product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
-            product_frame.pack(padx=5, pady=5)
+        count = 0
+        for i in range(3):
+            for j in range(3):
+                if count < len(self.products):
+                    print(self.products_keys)
+                    print(self.products_keys[count])
+                    product = self.products[self.products_keys[count]]
+                    # Container frame for each product
+                    product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
+                    product_frame.grid(row=i, column=j, sticky='ew')
 
-            original_image = Image.open(product['image_path'])
-            resized_image = original_image.resize((100, 100), Image.LANCZOS) 
-            photo = ImageTk.PhotoImage(resized_image)
-            self.images[product['id']] = photo 
+                    original_image = Image.open(product['image_path'])
+                    resized_image = original_image.resize((125, 125), Image.LANCZOS) 
+                    photo = ImageTk.PhotoImage(resized_image)
+                    self.images[product['id']] = photo 
 
-            # Image label
-            image_label = tk.Label(product_frame, image=photo, bg='white')
-            image_label.pack(side='top', padx=10)
-            image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
+                    # Image label
+                    image_label = tk.Label(product_frame, image=photo, bg='white')
+                    image_label.pack(side='top', padx=10)
+                    image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
 
-            # Text label for the name and price, and button for adding to cart
-            text = f"{product['name']} - ${product['price']}"
-            text_label = tk.Label(product_frame, text=text, background='white')
-            text_label.pack(side='bottom')
+                    # Text label for the name and price, and button for adding to cart
+                    text = f"{product['name']} - ${product['price']}"
+                    text_label = tk.Label(product_frame, text=text, background='white')
+                    text_label.pack(side='bottom')
+
+                    count += 1
+                
+        # for product_dict in self.products:
+        #     product = self.products[product_dict]
+        #     # Container frame for each product
+        #     product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='blue', highlightthickness=2)
+        #     product_frame.pack(padx=5, pady=5)
+
+        #     original_image = Image.open(product['image_path'])
+        #     resized_image = original_image.resize((100, 100), Image.LANCZOS) 
+        #     photo = ImageTk.PhotoImage(resized_image)
+        #     self.images[product['id']] = photo 
+
+        #     # Image label
+        #     image_label = tk.Label(product_frame, image=photo, bg='white')
+        #     image_label.pack(side='top', padx=10)
+        #     image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
+
+        #     # Text label for the name and price, and button for adding to cart
+        #     text = f"{product['name']} - ${product['price']}"
+        #     text_label = tk.Label(product_frame, text=text, background='white')
+        #     text_label.pack(side='bottom')
 
     def setup_checkout_panel(self):
         # self.cart_listbox = tk.Listbox(self.right_frame, bg='white', borderwidth=0)
@@ -99,6 +141,7 @@ class VendingMachineUI:
         # tk.Button(self.right_frame, text="Checkout", bg='white', command=self.checkout).pack(fill='x', pady=5)
 
         self.cart_canvas = tk.Canvas(self.right_frame, width=25, bg ='purple', highlightbackground='blue', highlightthickness=2)
+        self.cart_canvas.pack_propagate(0)
         self.cart_scrollbar = tk.Scrollbar(self.right_frame, bg='yellow', orient='vertical', command=self.cart_canvas.yview)
         self.scrollable_frame = tk.Frame(self.cart_canvas, bg='pink', highlightbackground='red', highlightthickness=2)
 
@@ -192,7 +235,7 @@ class VendingMachineUI:
     
         for item in self.cart_items:
             frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
-            frame.pack(pady=2, fill="x", expand=True)
+            frame.pack(side='top', pady=2, fill="x", expand=True)
             product = self.products[item]
                         
             original_image = Image.open(product['image_path'])
