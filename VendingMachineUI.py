@@ -89,6 +89,7 @@ class VendingMachineUI:
 
         # Creating product display with images
         self.products_frame = tk.Frame(self.left_frame, background='#ededed')
+        self.products_frame.pack_propagate(0)
         self.products_frame.pack(fill='both', expand=True)
 
         #self.products_frame.grid(row=0, column=0, sticky='nsew')
@@ -249,24 +250,68 @@ class VendingMachineUI:
 
     
         for item in self.cart_items:
-            frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
+            # frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
+            # frame.pack(side='top', pady=2, fill="x", expand=True)
+
+            # product = self.products[item]
+                        
+            # original_image = Image.open(product['image_path'])
+            # resized_image = original_image.resize((50, 50), Image.LANCZOS) 
+            # photo = ImageTk.PhotoImage(resized_image)
+            # self.cart_images[product['id']] = photo 
+
+            # # Image label
+            # image_label = tk.Label(frame, image=photo, bg='white')
+            # image_label.pack(side='left', padx=10)
+
+
+            # # Text label for the name and price, and button for adding to cart
+            # text = f"{product['name']} - ${product['price'] * self.cart_items[item]:.2f}"
+            # text_label = tk.Label(frame, text=text, background='white')
+            # text_label.pack(side='left')
+
+            frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='white', highlightthickness=2)
             frame.pack(side='top', pady=2, fill="x", expand=True)
+            frame.columnconfigure(0, weight=1)
+            frame.columnconfigure(1, weight=1)
+
             product = self.products[item]
                         
             original_image = Image.open(product['image_path'])
-            resized_image = original_image.resize((25, 25), Image.LANCZOS) 
+            resized_image = original_image.resize((50, 50), Image.LANCZOS) 
             photo = ImageTk.PhotoImage(resized_image)
             self.cart_images[product['id']] = photo 
 
             # Image label
             image_label = tk.Label(frame, image=photo, bg='white')
-            image_label.pack(side='left', padx=10)
-            image_label.bind("<Button-1>", lambda event, p=product: self.add_to_cart(event, p))
+            image_label.grid(column=0, row=0)
+
+            info_frame = tk.Frame(frame, bg='white')
+            info_frame.grid(column=1, row=0)
 
             # Text label for the name and price, and button for adding to cart
-            text = f"{product['name']} - ${product['price'] * self.cart_items[item]:.2f}"
-            text_label = tk.Label(frame, text=text, background='white')
-            text_label.pack(side='left')
+            name_text = f"{product['name']}"
+            name_label = tk.Label(info_frame, text=name_text, background='white')
+            name_label.grid(row=0, column=0)
+
+
+            quantity_frame = tk.Frame(info_frame, bg='white')
+            quantity_frame.grid(row=1, column=0)
+
+            quantity_frame.columnconfigure(0, weight=1)
+            quantity_frame.columnconfigure(1, weight=2)
+            quantity_frame.columnconfigure(2, weight=1)
+
+            qty_text = f"QTY: {self.cart_items[item]}"
+            qty__label = tk.Label(quantity_frame, text=qty_text, background='blue')
+            qty__label.grid(column=0, row=0)
+
+            margin_frame = tk.Frame(quantity_frame)
+            margin_frame.grid(column=1, row=0)
+
+            price_text = f"${product['price'] * self.cart_items[item]:.2f}"
+            price_label = tk.Label(quantity_frame, text=price_text, background='white', highlightthickness=1, highlightbackground='blue')
+            price_label.grid(column=2, row=0)
 
 
 
