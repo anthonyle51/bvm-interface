@@ -77,6 +77,7 @@ class VendingMachineUI:
 
         self.cart_items = {}
         self.cart_images = {}
+        self.x_image = None
         self.setup_checkout_panel()
 
     def setup_header(self):
@@ -247,7 +248,10 @@ class VendingMachineUI:
 
     def update_cart_view(self):
         self.clear_frame(self.scrollable_frame)
-
+        x_image = Image.open('assets/x.png')
+        x_resized_image = x_image.resize((25, 25), Image.LANCZOS) 
+        x_image_photo = ImageTk.PhotoImage(x_resized_image)
+        self.x_image = x_image_photo
     
         for item in self.cart_items:
             # frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='green', highlightthickness=2)
@@ -270,7 +274,7 @@ class VendingMachineUI:
             # text_label = tk.Label(frame, text=text, background='white')
             # text_label.pack(side='left')
 
-            frame = tk.Frame(self.scrollable_frame, width=50, highlightbackground='white', highlightthickness=2)
+            frame = tk.Frame(self.scrollable_frame, width=50, background='white')
             frame.pack(side='top', pady=2, fill="x", expand=True)
             frame.columnconfigure(0, weight=1)
             frame.columnconfigure(1, weight=1)
@@ -283,7 +287,7 @@ class VendingMachineUI:
             self.cart_images[product['id']] = photo 
 
             # Image label
-            image_label = tk.Label(frame, image=photo, bg='white')
+            image_label = tk.Label(frame, image=photo, background='white')
             image_label.grid(column=0, row=0)
 
             info_frame = tk.Frame(frame, bg='white')
@@ -313,7 +317,18 @@ class VendingMachineUI:
             price_label = tk.Label(quantity_frame, text=price_text, background='white', highlightthickness=1, highlightbackground='blue')
             price_label.grid(column=2, row=0)
 
+            # x_image = Image.open('assets/x.png')
+            # x_resized_image = x_image.resize((50, 50), Image.LANCZOS) 
+            # x_image_photo = ImageTk.PhotoImage(x_resized_image)
+            # self.x_image = x_image_photo
 
+            x_image_label = tk.Label(frame, image=self.x_image, background='white', width=40)
+            x_image_label.grid(column=2, row=0)
+            x_image_label.bind("<Button-1>", lambda event, p=product: self.remove_from_cart(event, p))
+
+    def remove_from_cart(self, event, product):
+        self.cart_items.pop(product['id'])
+        self.update_cart_view()
 
     def clear_frame(self, frame):
         for widget in frame.winfo_children():
