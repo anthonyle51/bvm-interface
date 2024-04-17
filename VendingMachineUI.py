@@ -58,17 +58,15 @@ class VendingMachineUI:
         self.subtotal = 0
 
         self.products = {
-            "A1":{"id": "A1", "name": "Engergizer Lithium AA", "price": 2.95, "image_path": "batteries/energizer-lithium-AA.jpg"},
-            # {"id": "A2", "name": "Lithium AAA", "price": 6.99, "image_path": "batteries/energizer-lithium-AAA.webp"},
-            "B1":{"id": "B1", "name": "Duracell Alkaline AA", "price": 1.25, "image_path": "batteries/duracell-alkaline-AA.jpg"},
-            "B2":{"id": "B2", "name": "Alkaline AAA", "price": 1.25, "image_path": "batteries/energizer-alkaline-AAA.jpg"},
-
-            "C1":{"id": "C1", "name": "Lithium AA", "price": 2.95, "image_path": "batteries/energizer-lithium-AA.jpg"},
-            "C2":{"id": "C2", "name": "Alkaline AA", "price": 1.25, "image_path": "batteries/duracell-alkaline-AA.jpg"},
-            "C3":{"id": "C3", "name": "Alkaline AAA", "price": 1.25, "image_path": "batteries/energizer-alkaline-AAA.jpg"},
-            "C4":{"id": "C4", "name": "Lithium AA", "price": 2.95, "image_path": "batteries/energizer-lithium-AA.jpg"},
-            "C5":{"id": "C5", "name": "Alkaline AA", "price": 1.25, "image_path": "batteries/duracell-alkaline-AA.jpg"},
-            "C6":{"id": "C6", "name": "Alkaline AAA", "price": 1.25, "image_path": "batteries/energizer-alkaline-AAA.jpg"}
+            "A1":{"id": "A1", "name": "Duracell CR2032", "price": 2.95, "image_path": "batteries/duracell_cr2032.png"},
+            "A2":{"id": "A2", "name": "Hi-Watt CR2032", "price": 1.25, "image_path": "batteries/hiwatt_cr2032.png"},
+            "A3":{"id": "A3", "name": "Toshiba CR2032", "price": 1.25, "image_path": "batteries/toshiba_cr2032.jpg"},
+            "B1":{"id": "B1", "name": "Energizer Alkaline-AA", "price": 2.95, "image_path": "batteries/energizer-alkaline-AA.jpg"},
+            "B2":{"id": "B2", "name": "Diehard Alkaline-AA", "price": 1.25, "image_path": "batteries/diehard_alkaline_AA.jpg"},
+            "B3":{"id": "B3", "name": "Duracell Alkaline-AA", "price": 1.25, "image_path": "batteries/duracell-alkaline-AA.jpg"},
+            "C1":{"id": "C1", "name": "Energizer Lithium-AA", "price": 2.95, "image_path": "batteries/energizer-lithium-AA.jpg"},
+            "C2":{"id": "C2", "name": "EBL Lithium-AA", "price": 1.25, "image_path": "batteries/ebl_li_AA.jpg"},
+            "C3":{"id": "C3", "name": "Duracell Lithium-AA", "price": 1.25, "image_path": "batteries/duracell_li_AA.png"}
         }
 
         self.products_keys = [key for key in self.products]
@@ -102,8 +100,6 @@ class VendingMachineUI:
         for i in range(3):
             for j in range(3):
                 if count < len(self.products):
-                    print(self.products_keys)
-                    print(self.products_keys[count])
                     product = self.products[self.products_keys[count]]
                     # Container frame for each product
                     product_frame = tk.Frame(self.products_frame, background='white', highlightbackground='white', highlightthickness=2)
@@ -165,7 +161,9 @@ class VendingMachineUI:
 
         self.orig_x = 0
 
-        #================= Checkout Frame =================
+        self.update_checkout_frame()
+
+    def update_checkout_frame(self):
         self.checkout_frame = tk.Frame(self.right_frame, bg='orange', height=160)
         self.checkout_frame.pack_propagate(0)
         self.checkout_frame.grid(row=1, sticky='nsew')
@@ -174,7 +172,7 @@ class VendingMachineUI:
         bufferRow = tk.Label(self.checkout_frame, text=" ", background='orange')
         bufferRow.grid(row=0)
 
-        subtotal = f"Subtotal: ${self.subtotal}"
+        subtotal = f"Subtotal: ${self.subtotal:.2f}"
         subtotal_label = tk.Label(self.checkout_frame, text=subtotal, background='white')
         subtotal_label.grid(row=1)
 
@@ -190,11 +188,11 @@ class VendingMachineUI:
         discount_label = tk.Label(self.checkout_frame, text=discount_text, background='white')
         discount_label.grid(row=4)
 
-        total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted)}"
+        total = f"Total: ${self.subtotal - (self.alkaline_discount * self.alkaline_inserted + self.lithium_dicount * self.lithium_inserted):.2f}"
         total_label = tk.Label(self.checkout_frame, text=total, background='white')
         total_label.grid(row=5)
 
-        checkout_icon = Image.open("batteries/checkout.jpg")
+        checkout_icon = Image.open("assets/checkout.jpg")
         resized_icon = checkout_icon.resize((25, 25), Image.LANCZOS) 
         checkout_photo = ImageTk.PhotoImage(resized_icon)
         self.checkout_image = checkout_photo 
@@ -210,14 +208,7 @@ class VendingMachineUI:
         bufferCol.grid(row=0, column=1)
 
         checkout_button = ttk.Button(checkout_button_frame, text="Checkout", command=self.checkout)
-        checkout_button.grid(row=0, column=2)
-        # checkout_button.pack(side='right', padx=20)
-
-        # image_label.pack(side='left', padx=10, pady=10, expand=True)
-
-        # checkout_button = tk.Frame(self.checkout_frame)
-        # total_label.grid(row=4)
-        
+        checkout_button.grid(row=0, column=2)   
 
     def start_scroll(self, event):
         self.orig_x = event.x
@@ -275,7 +266,7 @@ class VendingMachineUI:
             self.subtotal += product['price']
             
         self.update_cart_view()
-        print(self.cart_items)
+        self.update_checkout_frame()
         print("Subtotal:", self.subtotal)
 
     def update_cart_view(self):
